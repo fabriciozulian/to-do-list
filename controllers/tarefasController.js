@@ -25,6 +25,25 @@ const criarTarefa = async (req, res) => {
   }
 };
 
+// Listar tarefas do usuário
+const listarTarefas = async (req, res) => {
+  const usuarioId = req.usuario.id;
+
+  try {
+    const tarefas = await pool.query(
+      'SELECT * FROM tarefas WHERE id_usuario = ? ORDER BY criado_em DESC',
+      [usuarioId]
+    );
+    
+
+    res.json(tarefas);
+  } catch (erro) {
+    console.error(erro);
+    res.status(500).json({ mensagem: 'Erro ao buscar tarefas.' });
+  }
+};
+
 module.exports = {
-  criarTarefa
+  criarTarefa,
+  listarTarefas
 };

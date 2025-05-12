@@ -43,7 +43,28 @@ const listarTarefas = async (req, res) => {
   }
 };
 
+// Atualiza tarefa
+const atualizarTarefas = async (req, res) => {
+    const usuarioId = req.usuario.id;
+    const {titulo, descricao, id} = req.body;
+
+    if(!id || !titulo || !descricao){
+        res.status(400).json({ mensagem: 'Titulo, descricao, ou id incorreto'});
+    }
+    try{
+        const resultado = await pool.query(
+            'UPDATE tarefas SET titulo = ?, descricao = ? WHERE id = ? AND id_usuario = ?',
+            [titulo, descricao, id, usuarioId]
+          );
+
+        res.status(200).json({mensagem: "tarefa atualizada", resultado});
+    } catch {
+        res.status(500).json({ mensagem: 'Erro ao tentar atualizar a tarefa.'});
+    }
+};
+
 module.exports = {
   criarTarefa,
-  listarTarefas
+  listarTarefas,
+  atualizarTarefas
 };
